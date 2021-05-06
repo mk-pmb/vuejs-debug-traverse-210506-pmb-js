@@ -2128,16 +2128,34 @@ var seenObjects = new _Set();
  * getters, so that every nested property inside the object
  * is collected as a "deep" dependency.
  */
+var maxTraverseDepth = (+(inBrowser && window.vueMaxTraverseDepth) || 2048);
 function traverse (val) {
-  _traverse(val, seenObjects);
+  var tooDeep = ('Vue traverse()d too deeply (limit='
+    + maxTraverseDepth + ')');
+  tooDeep = new Error(tooDeep);
+  tooDeep.topVal = val;
+  _traverse(val, seenObjects, [], [], tooDeep);
   seenObjects.clear();
 }
 
-function _traverse (val, seen) {
+function _traverse (val, seen, pathKeys, pathVals, tooDeep) {
   var i, keys;
   var isA = Array.isArray(val);
   if ((!isA && !isObject(val)) || Object.isFrozen(val) || val instanceof VNode) {
     return
+  }
+  if (pathKeys.length > maxTraverseDepth) {
+    i = {
+      tooDeep,
+      seen,
+      topVal: tooDeep.topVal,
+      pathKeys,
+      pathVals,
+      stack: (new Error('')).stack.split(/\n\s*/),
+    };
+    if (inBrowser) { window.traversed = i; }
+    console.error('vue _traverse:', i);
+    throw tooDeep;
   }
   if (val.__ob__) {
     var depId = val.__ob__.dep.id;
@@ -2146,13 +2164,21 @@ function _traverse (val, seen) {
     }
     seen.add(depId);
   }
+  var v, k;
   if (isA) {
     i = val.length;
-    while (i--) { _traverse(val[i], seen); }
+    while (i--) {
+      v = val[i]
+      _traverse(v, seen, [...pathKeys, i], [...pathVals, v], tooDeep);
+    }
   } else {
     keys = Object.keys(val);
     i = keys.length;
-    while (i--) { _traverse(val[keys[i]], seen); }
+    while (i--) {
+      k = keys[i];
+      v = val[k];
+      _traverse(v, seen, [...pathKeys, k], [...pathVals, v], tooDeep);
+    }
   }
 }
 
