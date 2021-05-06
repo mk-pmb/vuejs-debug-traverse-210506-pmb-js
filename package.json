@@ -1,0 +1,27 @@
+{ "name": "vuejs-debug-traverse-210506-pmb",
+  "version": "0.0.1",
+  "description": "Temporary debug copy of vue.js",
+
+  "author": {
+    "name": "Evan You"
+  },
+  "homepage": "https://github.com/mk-pmb/vuejs-debug-traverse-210506-pmb-js/#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mk-pmb/vuejs-debug-traverse-210506-pmb-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mk-pmb/vuejs-debug-traverse-210506-pmb-js/issues"
+  },
+
+  "contributors": [
+    "M.K. (https://github.com/mk-pmb)"
+  ],
+
+  "private": true, "license": "MIT",
+
+  "main": "vue.esm.js",
+
+
+  "npm vs. BOM = Unexpected token": "-*- coding: UTF-8 -*-"
+}
