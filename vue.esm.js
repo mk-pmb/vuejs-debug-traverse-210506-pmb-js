@@ -2138,7 +2138,10 @@ function traverse (val) {
   seenObjects.clear();
 }
 
-function _traverse (val, seen, pathKeys, pathVals, tooDeep) {
+var abortRecursiveTraverse = (inBrowser && window.vueAbortRecursiveTraverse);
+function _traverse (val, seen, pathKeys, parentPathVals, tooDeep) {
+  if (abortRecursiveTraverse && parentPathVals.includes(val)) { return; }
+  const pathVals = [...parentPathVals, val];
   var i, keys;
   var isA = Array.isArray(val);
   if ((!isA && !isObject(val)) || Object.isFrozen(val) || val instanceof VNode) {
@@ -2168,8 +2171,8 @@ function _traverse (val, seen, pathKeys, pathVals, tooDeep) {
   if (isA) {
     i = val.length;
     while (i--) {
-      v = val[i]
-      _traverse(v, seen, [...pathKeys, i], [...pathVals, v], tooDeep);
+      v = val[i];
+      _traverse(v, seen, [...pathKeys, i], pathVals, tooDeep);
     }
   } else {
     keys = Object.keys(val);
@@ -2177,7 +2180,7 @@ function _traverse (val, seen, pathKeys, pathVals, tooDeep) {
     while (i--) {
       k = keys[i];
       v = val[k];
-      _traverse(v, seen, [...pathKeys, k], [...pathVals, v], tooDeep);
+      _traverse(v, seen, [...pathKeys, k], pathVals, tooDeep);
     }
   }
 }
