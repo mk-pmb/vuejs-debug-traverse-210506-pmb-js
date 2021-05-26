@@ -2128,19 +2128,17 @@ var seenObjects = new _Set();
  * getters, so that every nested property inside the object
  * is collected as a "deep" dependency.
  */
-var maxTraverseDepth = (+(inBrowser && window.vueMaxTraverseDepth) || 2048);
+var debugTraverse = ((inBrowser && window.vueDebugTraverse) || false);
+var maxTraverseDepth = (+debugTraverse.maxDepth || 2048);
 function traverse (val) {
-  var tooDeep = ('Vue traverse()d too deeply (limit='
-    + maxTraverseDepth + ')');
+  var tooDeep = ('Vue traverse()d too deeply (limit=' + maxTraverseDepth + ')');
   tooDeep = new Error(tooDeep);
   tooDeep.topVal = val;
-  _traverse(val, seenObjects, [], [], tooDeep);
+  traverse.dive(val, seenObjects, [], [], tooDeep);
   seenObjects.clear();
 }
 
-var abortRecursiveTraverse = (inBrowser && window.vueAbortRecursiveTraverse);
 function _traverse (val, seen, pathKeys, parentPathVals, tooDeep) {
-  if (abortRecursiveTraverse && parentPathVals.includes(val)) { return; }
   const pathVals = [...parentPathVals, val];
   var i, keys;
   var isA = Array.isArray(val);
@@ -2172,7 +2170,7 @@ function _traverse (val, seen, pathKeys, parentPathVals, tooDeep) {
     i = val.length;
     while (i--) {
       v = val[i];
-      _traverse(v, seen, [...pathKeys, i], pathVals, tooDeep);
+      traverse.dive(v, seen, [...pathKeys, i], pathVals, tooDeep);
     }
   } else {
     keys = Object.keys(val);
@@ -2180,10 +2178,13 @@ function _traverse (val, seen, pathKeys, parentPathVals, tooDeep) {
     while (i--) {
       k = keys[i];
       v = val[k];
-      _traverse(v, seen, [...pathKeys, k], pathVals, tooDeep);
+      traverse.dive(v, seen, [...pathKeys, k], pathVals, tooDeep);
     }
   }
 }
+
+traverse.dive = _traverse;
+(debugTraverse.initCustomTraverse || Object)(traverse);
 
 /*  */
 
