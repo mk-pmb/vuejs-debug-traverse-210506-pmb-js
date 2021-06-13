@@ -2134,7 +2134,15 @@ function traverse (val) {
   var tooDeep = ('Vue traverse()d too deeply (limit=' + maxTraverseDepth + ')');
   tooDeep = new Error(tooDeep);
   tooDeep.topVal = val;
-  traverse.dive(val, seenObjects, [], [], tooDeep);
+  tooDeep.abortSilently = function silentAbort() {
+    tooDeep.abortedSilently = true;
+    throw tooDeep;
+  };
+  try {
+    traverse.dive(val, seenObjects, [], [], tooDeep);
+  } catch (err) {
+    if ((err !== tooDeep) || (!tooDeep.abortedSilently)) { throw err; }
+  }
   seenObjects.clear();
 }
 
