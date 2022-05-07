@@ -1,6 +1,10 @@
 { "name": "vuejs-debug-traverse-210506-pmb",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Debug copy of vue.js, instrumented to trace an infinite recursion bug in our software. Originally, this was meant to be a temporary fork. One year later, we still use it as a dependency, so I should probably publish it.",
+
+  "npmInstallUrl": {
+    "default": "mk-pmb/vuejs-debug-traverse-210506-pmb-js#master"
+  },
 
   "author": {
     "name": "Evan You"

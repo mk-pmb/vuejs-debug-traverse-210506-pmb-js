@@ -2192,7 +2192,7 @@ function _traverse (val, seen, pathKeys, parentPathVals, tooDeep) {
 }
 
 traverse.dive = _traverse;
-(debugTraverse.initCustomTraverse || Object)(traverse);
+(debugTraverse.initCustomTraverse || Boolean)(traverse);
 
 /*  */
 
