@@ -1,6 +1,6 @@
 { "name": "vuejs-debug-traverse-210506-pmb",
-  "version": "0.2.1",
-  "description": "Temporary debug copy of vue.js",
+  "version": "0.2.2",
+  "description": "Debug copy of vue.js, instrumented to trace an infinite recursion bug in our software. Originally, this was meant to be a temporary fork. One year later, we still use it as a dependency, so I should probably publish it.",
 
   "author": {
     "name": "Evan You"
@@ -18,7 +18,7 @@
     "M.K. (https://github.com/mk-pmb)"
   ],
 
-  "private": true, "license": "MIT",
+  "private": false, "license": "MIT",
 
   "main": "vue.esm.js",
 
